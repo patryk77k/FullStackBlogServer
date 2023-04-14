@@ -27,4 +27,10 @@ app.post("/register", async (req, res) => {
   }
 });
 
+app.post("/login", async (req, res) => {
+  const { username, password } = req.body;
+  const userDoc = await User.findOne({ username: username });
+  const passOk = bcrypt.compareSync(password, userDoc.password);
+  res.json(passOk);
+});
 app.listen(4000);
