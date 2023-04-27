@@ -14,12 +14,7 @@ const fs = require("fs");
 const salt = bcrypt.genSaltSync(10);
 const secret = "qdwqdwefqef";
 
-app.use(
-  cors({
-    credentials: true,
-    origin: ["http://localhost:3000", "https://blog-mern4.onrender.com"],
-  })
-);
+app.use(cors({ credentials: true, origin: "http://localhost:3000" }));
 app.use(express.json());
 app.use(cookieParser());
 app.use("/uploads", express.static(__dirname + "/uploads"));
@@ -94,8 +89,6 @@ app.post("/post", uploadMiddleware.single("file"), async (req, res) => {
   });
 });
 
-////PUT
-
 app.put("/post", uploadMiddleware.single("file"), async (req, res) => {
   let newPath = null;
   if (req.file) {
@@ -108,19 +101,23 @@ app.put("/post", uploadMiddleware.single("file"), async (req, res) => {
 
   const { token } = req.cookies;
   jwt.verify(token, secret, {}, async (err, info) => {
-    const { id, title, summary, content } = req.body;
     if (err) throw err;
+    const { id, title, summary, content } = req.body;
     const postDoc = await Post.findById(id);
     const isAuthor = JSON.stringify(postDoc.author) === JSON.stringify(info.id);
     if (!isAuthor) {
       return res.status(400).json("you are not the author");
     }
-    await postDoc.updateOne({
-      title,
-      summary,
-      content,
-      cover: newPath ? newPath : postDoc.cover,
-    });
+    await Post.findOneAndUpdate(
+      { _id: id, author: info.id },
+      {
+        title,
+        summary,
+        content,
+        cover: newPath ? newPath : postDoc.cover,
+      }
+    );
+
     res.json(postDoc);
   });
 });
