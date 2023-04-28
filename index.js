@@ -1,3 +1,4 @@
+require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
 const mongoose = require("mongoose");
@@ -10,7 +11,6 @@ const cookieParser = require("cookie-parser");
 const multer = require("multer");
 const uploadMiddleware = multer({ dest: "uploads/" });
 const fs = require("fs");
-require("dotenv").config();
 
 const salt = bcrypt.genSaltSync(10);
 const secret = "qdwqdwefqef";
