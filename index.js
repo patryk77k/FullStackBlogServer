@@ -9,8 +9,8 @@ const app = express();
 const jwt = require("jsonwebtoken");
 const cookieParser = require("cookie-parser");
 const multer = require("multer");
-const uploadMiddleware = multer({ dest: "uploads/" });
 const fs = require("fs");
+const uploadMiddleware = multer({ dest: "uploads/" });
 
 const port = process.env.PORT || 4000;
 
